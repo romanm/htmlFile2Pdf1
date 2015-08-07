@@ -32,8 +32,11 @@ public class ScheduledTasks {
 			.appendMinutes().appendSuffix("m ")
 			.appendSeconds().appendSuffix("s ")
 			.toFormatter();
-	private static String workDir = "/home/roman/jura/workshop-manuals1991/";
 	//develop
+//	private static String workDir = "/home/roman/jura/workshop-manuals1991/";
+	//prodaction
+	private static String workDir = "/home/holweb/jura/workshop-manuals1991/";
+
 	private static String dirPdfName = workDir+ "OUT1pdf/";
 	final static Path pathStart = Paths.get(dirPdfName);
 
@@ -41,7 +44,10 @@ public class ScheduledTasks {
 	public void reportCurrentTime() {
 		startMillis = new DateTime();
 		System.out.println("The time is now " + dateFormat.format(startMillis.toDate()));
+		logger.debug("The time is now " + dateFormat.format(startMillis.toDate()));
 		filesCount = countFiles2(pathStart.toFile());
+		System.out.println("filesCount " + filesCount);
+		logger.debug("filesCount " + filesCount);
 		try {
 //			makeLargeHTML();
 			makePdfFromHTML();

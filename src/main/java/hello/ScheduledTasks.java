@@ -33,9 +33,9 @@ public class ScheduledTasks {
 			.appendSeconds().appendSuffix("s ")
 			.toFormatter();
 	//develop
-//	private static String workDir = "/home/roman/jura/workshop-manuals1991/";
+	private static String workDir = "/home/roman/jura/workshop-manuals1991/";
 	//prodaction
-	private static String workDir = "/home/holweb/jura/workshop-manuals1991/";
+//	private static String workDir = "/home/holweb/jura/workshop-manuals1991/";
 
 	private static String dirPdfName = workDir+ "OUT1pdf/";
 	final static Path pathStart = Paths.get(dirPdfName);

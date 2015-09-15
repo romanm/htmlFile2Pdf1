@@ -32,19 +32,36 @@ public class ScheduledTasks {
 			.appendMinutes().appendSuffix("m ")
 			.appendSeconds().appendSuffix("s ")
 			.toFormatter();
-	//develop
-	private static String workDir = "/home/roman/jura/workshop-manuals1991/";
-	//prodaction
-//	private static String workDir = "/home/holweb/jura/workshop-manuals1991/";
+	private static int yearMin =  1993;
+	private static int yearMax =  1993;
 
+	//develop
+	private static String basicDir ="/home/roman/jura/";
+	//prodaction
+//	private static String basicDir ="/home/holweb/jura/";
+
+//	//develop
+//	private static String workDir = "/home/roman/jura/workshop-manuals1991/";
+//	//prodaction
+////	private static String workDir = "/home/holweb/jura/workshop-manuals1991/";
+
+	private static String workDir = basicDir + "workshop-manuals"
+			+ yearMin
+			+ "-"
+			+ yearMax
+			+ "/";
+
+	private static String dirLargeHtmlName = workDir+ "OUT1html/";
 	private static String dirPdfName = workDir+ "OUT1pdf/";
-	final static Path pathStart = Paths.get(dirPdfName);
+	final static Path pathStart = Paths.get(dirLargeHtmlName);
+//	final static Path pathStart = Paths.get(dirPdfName);
 
 	@Scheduled(fixedRate = 500000000)
 	public void reportCurrentTime() {
 		startMillis = new DateTime();
 		System.out.println("The time is now " + dateFormat.format(startMillis.toDate()));
 		logger.debug("The time is now " + dateFormat.format(startMillis.toDate()));
+		logger.debug(pathStart.toFile()+"");
 		filesCount = countFiles2(pathStart.toFile());
 		System.out.println("filesCount " + filesCount);
 		logger.debug("filesCount " + filesCount);
@@ -57,8 +74,8 @@ public class ScheduledTasks {
 	}
 
 	private void makePdfFromHTML() throws IOException {
-//		Path pathHtmlLarge = Paths.get(dirLargeHtmlName);
-		Path pathHtmlLarge = Paths.get(dirPdfName);
+		Path pathHtmlLarge = Paths.get(dirLargeHtmlName);
+//		Path pathHtmlLarge = Paths.get(dirPdfName);
 		logger.debug("Start folder : "+pathHtmlLarge);
 		Files.walkFileTree(pathHtmlLarge, new SimpleFileVisitor<Path>() {
 			@Override
@@ -76,11 +93,22 @@ public class ScheduledTasks {
 				String[] splitPathFileName = fileName.split("/");
 				logger.debug(""+splitPathFileName);
 				final String fileNameShort = splitPathFileName[splitPathFileName.length - 1];
+				logger.debug(""+fileNameShort);
+				
+				String hTML_TO_PDF = dirPdfName+ fileNameShort+".pdf";
+				File f = new File(hTML_TO_PDF);
+				if(f.exists())
+				{
+					logger.debug("f.exists() --  "+hTML_TO_PDF);
+					return visitFile;
+				}
+
+				
 				if("html".equals(fileExtention)){
 					logger.debug(fileName);
 					try {
-						savePdf(fileName, dirPdfName+ fileNameShort+".pdf");
-						Files.delete(file);
+						savePdf(fileName, hTML_TO_PDF);
+						//Files.delete(file);
 					} catch (com.lowagie.text.DocumentException | IOException e) {
 						System.out.println(fileName);
 						e.printStackTrace();
@@ -89,6 +117,7 @@ public class ScheduledTasks {
 				return visitFile;
 			}
 		});}
+
 	void savePdf(String htmlOutFileName, String HTML_TO_PDF) throws com.lowagie.text.DocumentException, IOException {
 		String url = new File(htmlOutFileName).toURI().toURL().toString();
 		logger.debug(procentWorkTime()+" - start - "+HTML_TO_PDF);
@@ -100,6 +129,7 @@ public class ScheduledTasks {
 		os.close();
 		logger.debug(procentWorkTime()+" - end - "+HTML_TO_PDF);
 	}
+
 	private	int fileIdx = 0;
 	int filesCount;
 	String procentWorkTime() {
